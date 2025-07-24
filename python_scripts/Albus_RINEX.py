@@ -574,6 +574,7 @@ OUTPUTS:  None
           RX3_flag = True
           if DEBUG_SET:
             print('converting to RINEX3 file name from RINEX2 name: ', RINEX_filename)
+          print('converting to RINEX3 file name from RINEX2 name: ', RINEX_filename)
           RINEX3_filename = get_rinex3_filename(RINEX_filename, country)
           if RINEX3_filename is None:
             pass
@@ -598,11 +599,32 @@ OUTPUTS:  None
         pass
     elif(FTP_site == 9):
         # South Africa Trignet
-        if DEBUG_SET:
-          print ( '*********** accessing South African Trignet FTP site!')
-        ftp_file_name = RINEX_filename[0:7].upper()+'Z.zip'
-        site_str = "ftp://ftp.trignet.co.za/RefData.%2.2d/%3.3d/L1L2_30sec/%s"%(year-2000, doy, ftp_file_name)
-        our_Z_file = output_directory + '/' + ftp_file_name
+        if year >= 2026:   # need RINEX3
+          RX3_flag = True
+        if year == 2025 and doy >= 80:   # also need RINEX 3 data
+# need doy switch in 2025 - should be  March 20, 2025 
+          RX3_flag = True
+        if RX3_flag:
+          RINEX3_filename = get_rinex3_filename(RINEX_filename, country)
+          print ( '*********** accessing South African Trignet FTP site! for RINEX3 data')
+          if RINEX3_filename is None:
+            pass
+          else:
+            our_file = output_directory + '/' + RINEX_filename 
+            our_Z_file = output_directory + '/' + RINEX3_filename + '.gz'
+          ftp_file_name = RINEX3_filename + '.gz'
+          ftp_r_3_dir = ftp_file_name[0:4]
+# need sequence e.g. /RefData.25/163/Daily_30sec/UPTA
+          print('***doy =', doy)
+          site_str = "ftp://ftp.trignet.co.za/RefData.%2.2d/%3.3d/Daily_30sec/%s/%s"%(year-2000, doy, ftp_r_3_dir,ftp_file_name)
+
+          print('trignet site string', site_str )
+        else:  # use old RINEX 2 data
+          print ( '*********** accessing South African Trignet FTP site! for RINEX2 data')
+          ftp_file_name = RINEX_filename[0:7].upper()+'Z.zip'
+          site_str = "ftp://ftp.trignet.co.za/RefData.%2.2d/%3.3d/Daily_30sec/%s"%(year-2000, doy, ftp_file_name)
+          our_Z_file = output_directory + '/' + ftp_file_name
+
     elif(FTP_site == 10):
         # New Zealand GeoNet and LINZ servers
         if DEBUG_SET:
