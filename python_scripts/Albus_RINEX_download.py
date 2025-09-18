@@ -6,6 +6,7 @@
 # 2007 Jan 19  James M Anderson  --JIVE  start
 # 2020 Using pycurl with python3
 # 2023 Updated to access current CDDIS server
+# 2025 modified script so as to eliminate annoying retrieval error messages
 
 global DEBUG_SET
 DEBUG_SET = False
