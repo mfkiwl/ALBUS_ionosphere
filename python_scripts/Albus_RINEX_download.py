@@ -62,8 +62,8 @@ def main():
       else:
          try:
            cnopts = pysftp.CnOpts()
-# next line now obsolete
-#          cnopts.hostkeys = None
+# Geosciences Australia seems not to need this setting anymore
+#          cnopts.hostkeys = None   
            split_location = sys.argv[1].find('/')
            host_name =  sys.argv[1][:split_location]
            localFilePath = sys.argv[2]
@@ -117,4 +117,9 @@ def main():
     sys.exit(0)
 
 if __name__ == '__main__':
-    main()
+# wrapping main in try/except to avoid getting uninformative and repetitive
+# error messages when data cannot be found or retrieved
+     try:
+       main()
+     except:
+       pass
